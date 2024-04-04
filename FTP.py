@@ -137,15 +137,17 @@ class FTP:
         self.client_socket.send(f"CWD {cd_to}\r\n".encode())
         self.__display_response()
 
-    def get(self, file_name, *args):
-        def get_file(data_socket):
-            with open(file_name, "w") as file:
+    def get(self, remote_file, local_file="", *args):
+        def get_file(data_socket, remote_file, local_file):
+            local_file = remote_file if not local_file else local_file
+            with open(local_file, "w") as file:
                 rcv = data_socket.recv(1024).decode()
                 while rcv != "":
                     file.write(rcv.replace("\n", ""))
                     rcv = data_socket.recv(1024).decode()
 
-        self.__open_remote_data_connection(f"RETR {file_name}", get_file)
+        wrapped_get_file = lambda data_socket: get_file(data_socket, remote_file, local_file)
+        self.__open_remote_data_connection(f"RETR {remote_file}", wrapped_get_file)
         self.__display_response()
 
     def put(self, file_name, *args):
@@ -169,4 +171,3 @@ class FTP:
             return
         self.client_socket.send(f"RNTO {to_name}\r\n".encode())
         self.__display_response()
-
