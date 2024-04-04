@@ -17,4 +17,4 @@ This is an assignment given to me to create a ftp client using python without us
 - rename 
 - user <br>
 More detail of each command provided by prof are here https://ss64.com/nt/ftp.html.<br><br>
-careful! bug waiting ahead.
+Careful! bugs waiting ahead.
