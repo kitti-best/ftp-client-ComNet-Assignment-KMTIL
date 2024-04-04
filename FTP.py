@@ -150,8 +150,15 @@ class FTP:
         self.__open_remote_data_connection(f"RETR {remote_file}", wrapped_get_file)
         self.__display_response()
 
-    def put(self, file_name, *args):
-        self.__open_remote_data_connection(f"STOR {file_name}", lambda *args: None)
+    def put(self, local_file, remote_file="", *args):
+        def put_file(data_socket, local_file):
+            with open(local_file, "rb") as file:
+                data = file.read()
+                data_socket.sendall(data)
+
+        wrapped_put = lambda data_socket: put_file(data_socket, local_file)
+        remote_file = local_file if not remote_file else remote_file
+        self.__open_remote_data_connection(f"STOR {remote_file}", wrapped_put)
         self.__display_response()
 
     def delete(self, file_name, *args):
