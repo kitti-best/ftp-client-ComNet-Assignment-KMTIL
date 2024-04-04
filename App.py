@@ -5,21 +5,22 @@ class App:
     def __init__(self):
         self.ftp = FTP()
         self.command_mapper = {
-            "ascii": self.ftp.ascii, # check
-            "binary": self.ftp.binary, # check
-            "bye": self.ftp.quit, # check
-            "cd": self.ftp.cd, # check
-            "close": self.ftp.disconnect, # check
-            "delete": self.ftp.delete, # check
-            "disconnect": self.ftp.disconnect, # check
-            "get": self.ftp.get, # check
-            "ls": self.ftp.ls, # what about ls /pub
-            "open": self.ftp.open, # check
+            "ascii": self.ftp.ascii,
+            "binary": self.ftp.binary,
+            "bye": self.ftp.quit,
+            "cd": self.ftp.cd,
+            "close": self.ftp.disconnect,
+            "delete": self.ftp.delete,
+            "disconnect": self.ftp.disconnect,
+            "get": self.ftp.get,
+            "ls": self.ftp.ls,
+            "open": self.ftp.open,
             "put": self.ftp.put,
-            "pwd": self.ftp.pwd, # check
-            "quit": self.ftp.quit, # check
-            "rename": self.ftp.rename, # check
-            "user": self.ftp.user, # check
+            "pwd": self.ftp.pwd,
+            "quit": self.ftp.quit,
+            "rename": self.ftp.rename,
+            "user": self.ftp.user,
+            "help": self.help,
             "__not_connected__": self.__not_connect_handler,
             "__return__": lambda: None, # do nothing
             "__param_incomplete__": lambda: None, # do nothing
@@ -47,7 +48,7 @@ class App:
             command, params = "__return__", ""
             return command, params
         else:
-            command, params = user_input[0], user_input[1:]
+            command, params = user_input[0].lower(), user_input[1:]
 
         if not command in self.command_mapper:
             print("Invalid command.")
@@ -77,3 +78,12 @@ class App:
 
     def __not_connect_handler(self, *args):
         print("Not connected.")
+
+    def help(self):
+        possible_commands = []
+        for command in self.command_mapper.keys():
+            if not command.startswith("__"):
+                possible_commands.append(command)
+
+
+
