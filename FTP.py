@@ -15,6 +15,9 @@ class FTP:
             print(recv.strip())
             try:
                 status = Status(int(recv[:3]))
+                if Status.is_negative5xx(status) or Status.is_negative4xx(status):
+                    print("Hey")
+                    return
             except (TypeError, IndexError) as e:
                 status = None
                 return status
@@ -122,15 +125,22 @@ class FTP:
             self.disconnect(show_res=False)
         sys.exit()
 
-    def ls(self, remote_dir="", *args):
-        def show_remote_files(data_socket):
+    def ls(self, remote_dir="", local_dir="", *args):
+        def show_remote_files(data_socket, local_dir):
+            data = ""
             rcv = data_socket.recv(1024).decode()
             while rcv != "":
-                print(rcv.strip())
+                data += rcv
+                if not local_dir:
+                    print(rcv.strip())
                 rcv = data_socket.recv(1024).decode()
 
-        remote_dir = "x" + remote_dir if remote_dir else ""
-        self.__open_remote_data_connection("NLST" + remote_dir, show_remote_files)
+            with open(local_dir, "w") as file:
+                file.write(data)
+
+        wrapped_show_remote = lambda data_socket: show_remote_files(data_socket, local_dir)
+        remote_dir = " " + remote_dir if remote_dir else ""
+        self.__open_remote_data_connection("NLST" + remote_dir, wrapped_show_remote)
         self.__display_response()
 
     def cd(self, cd_to, *args):
