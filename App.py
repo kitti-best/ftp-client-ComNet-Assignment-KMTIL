@@ -84,6 +84,3 @@ class App:
         for command in self.command_mapper.keys():
             if not command.startswith("__"):
                 possible_commands.append(command)
-
-
-
