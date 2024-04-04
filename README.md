@@ -1,6 +1,6 @@
-## ftp Client for Computer Network class in KMITL
+# ftp Client for Computer Network class in KMITL
 This is an assignment given to me to create a ftp client using python without using any ftp library.<br>
-# This assignment consists of making the command as follow.<br>
+## This assignment consists of making the command as follow.<br>
 - ascii 
 - binary 
 - bye 
